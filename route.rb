@@ -9,7 +9,11 @@ class Route
     @stations.insert(-2, station)
   end
 
-  def delete_station
-    @stations.delete_at(-2) if @stations.size > 2
+  def delete_station(station)
+    @stations.delete_at(station) if @stations.first != station && @stations.last != station
+  end
+
+  def print_stations
+    @stations.each { |station| puts station.name }
   end
 end
