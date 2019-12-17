@@ -1,8 +1,9 @@
 class Route
-  attr_reader :stations, :start, :finish
+  attr_reader :stations
 
   def initialize(start, finish)
     @stations = [start, finish]
+
   end
 
   def add_station(station)
@@ -15,5 +16,13 @@ class Route
 
   def print_stations
     @stations.each { |station| puts station.name }
+  end
+
+  def start
+    @stations.first
+  end
+
+  def finish
+    @stations.last
   end
 end
