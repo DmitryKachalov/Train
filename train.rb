@@ -11,7 +11,6 @@ class Train
   def decrease_speed(value)
     @speed -= value.abs
     @speed = 0 if @speed.negative?
-    @speed
   end
 
   def increase_speed(value)
@@ -35,17 +34,17 @@ class Train
   def forward_train
     return unless next_station
 
-    @route.stations[@current_station_index].remove_train(self)
+    current_station.remove_train(self)
     @current_station_index += 1
-    @route.stations[@current_station_index].add_train(self)
+    current_station.add_train(self)
   end
 
   def backward_train
     return unless prev_station
 
-    @route.stations[@current_station_index].remove_train(self)
+    current_station.remove_train(self)
     @current_station_index -= 1
-    @route.stations[@current_station_index].add_train(self)
+    current_station.add_train(self)
   end
 
   def next_station
