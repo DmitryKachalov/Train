@@ -46,6 +46,14 @@ class Train
     current_station.add_train(self)
   end
 
+
+
+  def current_station
+    @route.stations[@current_station_index]
+  end
+
+  protected
+  #методы вспомогательные
   def next_station
     return if @current_station_index >= @route.stations.size - 1
 
@@ -58,8 +66,6 @@ class Train
     @route.stations[@current_station_index - 1]
   end
 
-  def current_station
-    @route.stations[@current_station_index]
-  end
+
 
 end
