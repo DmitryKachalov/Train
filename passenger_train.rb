@@ -6,8 +6,4 @@ class PassengerTrain < Train
     super
     @type = :passenger
   end
-
-  def add_wagon(wagon)
-    @wagons << wagon if @speed.zero? && @type == wagon.type
-  end
 end
