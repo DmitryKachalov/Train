@@ -1,9 +1,9 @@
 class Route
   attr_reader :stations
 
-  def initialize(start, finish)
+  def initialize(start, finish, stations = nil)
     @stations = [start, finish]
-
+    stations&.each { |station| add_station(station) }
   end
 
   def add_station(station)
@@ -14,8 +14,8 @@ class Route
     @stations.delete(station) unless [start, finish].include? station
   end
 
-  def print_stations
-    @stations.each { |station| puts station.name }
+  def print
+    @stations.each_with_index { |station, index| puts "#{index}. #{station.name}" unless station == start || station == finish }
   end
 
   def start
@@ -24,5 +24,9 @@ class Route
 
   def finish
     @stations.last
+  end
+
+  def name
+    "#{start.name} - #{finish.name}"
   end
 end

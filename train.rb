@@ -1,5 +1,5 @@
 class Train
-  attr_reader :number, :speed
+  attr_reader :number, :speed, :type, :wagons
 
   def initialize(number)
     @number = number.to_s
@@ -30,6 +30,10 @@ class Train
     @current_station_index = 0
   end
 
+  def route
+    @route&.name
+  end
+
   def forward_train
     return unless next_station
 
@@ -45,8 +49,6 @@ class Train
     @current_station_index -= 1
     current_station.add_train(self)
   end
-
-
 
   def current_station
     @route.stations[@current_station_index]
