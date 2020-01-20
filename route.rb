@@ -15,7 +15,11 @@ class Route
   end
 
   def print
-    @stations.each_with_index { |station, index| puts "#{index}. #{station.name}" unless station == start || station == finish }
+    @stations.each_with_index do |station, index|
+      unless station == start || station == finish
+        puts "#{index}. #{station.name}"
+      end
+    end
   end
 
   def start

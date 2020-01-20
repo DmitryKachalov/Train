@@ -11,19 +11,16 @@ class Main
 
   attr_reader :user_stations
 
-  def initialize
+  def initialize(interface)
     @user_stations = []
     @user_trains = []
     @user_routes = []
     @user_carriages = []
-  end
-
-  def interface
-    Interface.new
+    @interface = interface
   end
 
   def start
-    action = interface.start_menu
+    action = @interface.start_menu
     case action
     when 1 then exit(0)
     when 2 then manage_station
@@ -37,7 +34,7 @@ class Main
   private
   #################MANAGE STATION##############
   def manage_station
-    action = interface.station_menu
+    action = @interface.station_menu
     case action
     when 1 then start
     when 2 then create_station
@@ -49,8 +46,8 @@ class Main
   end
 
   def create_station
-    puts "Введите название станции"
-    name = gets.chomp
+    @interface.create_station_title
+    name = @interface.get_name
     station = Station.new(name)
     @user_stations << station
     puts "Станция #{@user_stations.last.name} создана"
@@ -64,15 +61,15 @@ class Main
 
   def delete_station
     print_stations
-    puts 'Введите номер станции для удаления'
-    number = gets.to_i - 1
+    @interface.delete_station_number
+    number = @interface.get_number
     @user_stations.delete_at(number)
   end
 
   ########################MANAGE TRAIN###########################
 
   def manage_train
-    action = interface.train_menu
+    action = @interface.train_menu
     case action
     when 1 then start
     when 2 then create_train
@@ -85,12 +82,9 @@ class Main
   end
 
   def create_train
-    puts 'Введите номер поезда'
-    number = gets.chomp
-    puts '[1] Грузовой поезд'
-    puts '[2] Пассажирский поезд'
-    puts '[3] Отмена'
-    action = gets.chomp.to_f
+    @interface.create_train_title
+    number = @interface.get_name
+    action = @interface.train_type_menu
     case action
     when 1
       train = CargoTrain.new(number)
@@ -107,15 +101,15 @@ class Main
   end
 
   def update_trains
-    puts 'Выберите порядковый номер поезда для изменения'
+    @interface.update_train_title
     print_trains
-    number = gets.to_i
-    action = interface.wagon_menu
+    number = @interface.get_number
+    action = @interface.wagon_menu
     case action
     when 2
       # Добавляем вагон с проверкой на тип
-      wagon = @user_trains[number - 1].type == :cargo ? CargoWagon.new : PassengerWagon.new
-      @user_trains[number - 1].add_wagon(wagon)
+      wagon = @user_trains[number].type == :cargo ? CargoWagon.new : PassengerWagon.new
+      @user_trains[number].add_wagon(wagon)
       puts 'Вагон добавлен'
     when 3
       @user_trains[number - 1].remove_wagon
@@ -135,15 +129,15 @@ class Main
 
   def delete_train
     print_trains
-    puts 'Введите порядковый номер поезда для удаления'
-    number = gets.to_i - 1
+    @interface.delete_train_title
+    number = @interface.get_number
     @user_trains.delete_at(number)
   end
 
   ########################MANAGE ROUTE###########################
 
   def manage_route
-    action = interface.route_menu
+    action = @interface.route_menu
 
     case action
     when 1 then start
@@ -159,13 +153,13 @@ class Main
   def create_route
     print_stations
     loop do
-      puts 'Введите порядковый номер первой станции'
-      station_first = gets.to_i
-      puts 'Введите порядковый номер конечной станции'
-      station_last = gets.to_i
+      @interface.create_first_station
+      station_first = @interface.get_number
+      @interface.create_last_station
+      station_last = @interface.get_number
       # Проверяем что станция первая не ровна последней
       if station_first != station_last
-        route = Route.new(@user_stations[station_first - 1], @user_stations[station_last - 1])
+        route = Route.new(@user_stations[station_first], @user_stations[station_last])
         @user_routes << route
         puts "Maршрут #{route.name} создан"
         break
@@ -184,15 +178,15 @@ class Main
   def update_route
     puts 'Выберите порядковый номер маршрута который хотите изменить'
     print_route
-    number_route = gets.to_i - 1
-    action = interface.route_station_menu
+    number_route = @interface.get_number
+    action = @interface.route_station_menu
     route = @user_routes[number_route]
     case action
     when 2
       print_stations
       loop do
-        puts 'Выберите станцию из списка'
-        number_station = gets.to_i - 1
+        @interface.station_list
+        number_station = @interface.get_number
         station = @user_stations[number_station]
         # Проверяем есть ли станция на маршруте, если нет то добавляем в маршрут
         if !route.stations.find { |current| current == station }
@@ -206,8 +200,8 @@ class Main
     when 3
       # Удаляем станцию с маршрута
       route.print
-      puts 'Выберите станцию которую хотите удалить'
-      number_station = gets.to_i - 1
+      @interface.station_delete_list
+      number_station = @interface.get_number
       station = @user_stations[number_station]
       route.delete_station(station)
       puts "Станция #{station.name} удалена"
@@ -218,8 +212,8 @@ class Main
 
   def delete_route
     print_route
-    puts 'Выберите маршрут который хотите удалить'
-    number = gets.to_i - 1
+    route_delete_list
+    number = @interface.get_number
     route = @user_routes[number]
     @user_routes.delete(route)
     puts "Маршрут #{route.name} удален"
@@ -228,7 +222,7 @@ class Main
   ########################MANAGE TRAIN ROUTE###########################
 
   def manage_train_route
-    action = interface.train_route_menu
+    action = @interface.train_route_menu
 
     case action
     when 1 then start
@@ -241,14 +235,14 @@ class Main
 
   def assign_route
     # Выбор поезда
-    puts "Выберите поезд из списка"
+    @interface.train_list
     print_trains
-    number_train = gets.to_i - 1
+    number_train = @interface.get_number
     train = @user_trains[number_train]
     # Выбор маршрута
-    puts 'Выберите маршрут из списка'
+    @interface.route_list
     print_route
-    number_route = gets.to_i - 1
+    number_route = @interface.get_number
     route = @user_routes[number_route]
     #Назначение поезду маршрута
     train.accept_route(route)
@@ -259,15 +253,12 @@ class Main
   def train_movement
     puts 'Выберите поезд с маршрутом'
     print_trains(false)
-    number = gets.to_i - 1
-
+    number = @interface.get_number
+    @interface.train_route
     train = @user_trains[number]
     puts "поезд находится на станции #{train.current_station.name}"
 
-    puts '[1] Отмена'
-    puts '[2] Движение вперед по маршруту'
-    puts '[3] Движение назад по маршруту'
-    action = gets.to_i
+    action = @interface.train_move_menu
     case action
     when 2 then train.forward_train
     when 3 then train.backward_train
@@ -280,7 +271,7 @@ end
 
 
 
-Main.new.start
+Main.new(Interface.new).start
 
 
 
