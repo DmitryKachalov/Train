@@ -9,14 +9,12 @@ require_relative 'passenger_wagon'
 require_relative 'interface'
 
 class Main
-
   attr_reader :user_stations
 
   def initialize(interface)
     @user_stations = []
     @user_trains = []
     @user_routes = []
-    @user_carriages = []
     @interface = interface
   end
 
@@ -269,8 +267,6 @@ class Main
     manage_train_route
   end
 end
-
-
 
 Main.new(Interface.new).start
 
