@@ -1,10 +1,22 @@
+require_relative './module/manufacturer'
+
 class Train
+
+
+  include Manufacturer
   attr_reader :number, :speed, :type, :wagons
+
+  @@trains = []
 
   def initialize(number)
     @number = number.to_s
     @wagons = []
     @speed = 0
+    @@trains << self
+  end
+
+  def self.find(number)
+    @@trains.find { |train| train.number == number }
   end
 
   def decrease_speed(value)
