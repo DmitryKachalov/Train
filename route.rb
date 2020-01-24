@@ -1,9 +1,14 @@
+require_relative './module/instance_counter'
+
 class Route
+
+  include InstanceCounter
   attr_reader :stations
 
   def initialize(start, finish, stations = nil)
     @stations = [start, finish]
     stations&.each { |station| add_station(station) }
+    self.register_instance
   end
 
   def add_station(station)
@@ -15,7 +20,11 @@ class Route
   end
 
   def print
-    @stations.each_with_index { |station, index| puts "#{index}. #{station.name}" unless station == start || station == finish }
+    @stations.each_with_index do |station, index|
+      unless station == start || station == finish
+        puts "#{index}. #{station.name}"
+      end
+    end
   end
 
   def start
