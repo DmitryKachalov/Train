@@ -96,6 +96,12 @@ class Main
     else
       manage_train
     end
+  rescue RuntimeError
+    puts "Неверный формат номера"
+    puts "Введите номер в формате 'xxxxx'" \
+         "или 'xxx-xx', где x-цифра или буква"
+    retry
+  ensure
     manage_train
   end
 
