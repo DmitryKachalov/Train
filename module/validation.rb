@@ -5,17 +5,17 @@ module Validation
   end
 
   module ClassMethods
-    attr_reader :validates
+    attr_reader :validations
     def validate(name, *args)
-      @validates ||= []
-      @validates << { name => args }
+      @validations ||= []
+      @validations << { name => args }
     end
   end
 
   module InstanceMethods
     def validate!
-      self.class.validates.each do |hh|
-        hh.each do |name, args|
+      self.class.validations.each do |validation|
+        validation.each do |name, args|
           val = instance_variable_get("@#{name}")
           send "validate_#{args[0]}", val, *args[1]
         end
@@ -36,11 +36,16 @@ module Validation
     end
 
     def validate_type(val, type)
-      raise 'Невальдный тип' if val != type
+      raise 'Невалидный тип' if val.class != type
     end
 
     def validate_format(val, format)
       raise 'Неверный формат' if val !~ format
     end
+
+    def validate_route(val)
+      raise 'Одинаковые станции' if val.first == val.last
+    end
+
   end
 end
