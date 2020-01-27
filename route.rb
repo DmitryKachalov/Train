@@ -3,10 +3,17 @@ require_relative './module/instance_counter'
 class Route
 
   include InstanceCounter
+  include Validation
+
   attr_reader :stations
+  validate :stations, :presence
+  validate :stations.first, :type, Station
+  validate :stations.last, :type, Station
+  validate :stations, :route
 
   def initialize(start, finish, stations = nil)
     @stations = [start, finish]
+    validate!
     stations&.each { |station| add_station(station) }
     self.register_instance
   end

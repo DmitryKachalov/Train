@@ -1,13 +1,16 @@
 require_relative './module/manufacturer'
 require_relative './module/instance_counter'
-
+require_relative './module/validation'
 class Train
 
   include InstanceCounter
   include Manufacturer
-  attr_reader :number, :speed, :type, :wagons
 
+  NUMBER_FORMAT = /\w{3}-?\w{2}/.freeze
+
+  attr_reader :number, :speed, :type, :wagons
   @@trains = {}
+
 
   def initialize(number)
     @number = number.to_s
@@ -15,6 +18,7 @@ class Train
     @speed = 0
     @@trains[number] = self
     self.register_instance
+
   end
 
   def self.find(number)
@@ -69,6 +73,7 @@ class Train
   end
 
   protected
+
   #методы вспомогательные
   def next_station
     return if @current_station_index >= @route.stations.size - 1
@@ -81,7 +86,4 @@ class Train
 
     @route.stations[@current_station_index - 1]
   end
-
-
-
 end
