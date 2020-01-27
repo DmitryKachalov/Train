@@ -1,9 +1,17 @@
 require_relative './module/instance_counter'
+require_relative './module/validation'
 
 class Station
 
   include InstanceCounter
-  attr_reader :name, :trains #getter
+  include Validation
+
+  NAME_FORMAT = /^[a-z]{1,15}$/i.freeze
+
+  attr_reader :name, :trains
+  validate :name, :presence
+  validate :name, :format, NAME_FORMAT
+
   @@all = []
 
   def initialize(name)
@@ -11,6 +19,7 @@ class Station
     @trains = []
     @@all << self
     self.register_instance
+    validate!
   end
 
   def self.all
@@ -20,10 +29,6 @@ class Station
   def trains_type(type)
     @trains.select { |train| train.type == type }
   end
-
-  #def trains_type_count(type)
-  #  trains_type(type).size
-  #end
 
   def add_train(train)
     @trains.push(train)

@@ -50,6 +50,12 @@ class Main
     station = Station.new(name)
     @user_stations << station
     puts "Станция #{@user_stations.last.name} создана"
+  rescue RuntimeError
+    puts "Неверный формат имени"
+    puts "Введите латинские буквы, kоличество от 3 до 15'"
+    retry
+  ensure
+    manage_station
   end
 
   def print_stations

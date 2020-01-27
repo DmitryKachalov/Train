@@ -1,14 +1,16 @@
 require_relative './module/manufacturer'
 require_relative './module/instance_counter'
-
+require_relative './module/validation'
 class Train
 
   include InstanceCounter
   include Manufacturer
-  attr_reader :number, :speed, :type, :wagons
 
-  @@trains = {}
   NUMBER_FORMAT = /\w{3}-?\w{2}/.freeze
+
+  attr_reader :number, :speed, :type, :wagons
+  @@trains = {}
+
 
   def initialize(number)
     @number = number.to_s
@@ -16,13 +18,7 @@ class Train
     @speed = 0
     @@trains[number] = self
     self.register_instance
-    validate!
-  end
 
-  def valid?
-    validate!
-  rescue RuntimeError ##   ПРАВИЛЬНО ИЛИ НЕТ RuntimeError
-    false
   end
 
   def self.find(number)
@@ -78,15 +74,6 @@ class Train
 
   protected
 
-  def validate!
-    raise "Номер не может быть пустым" if @number.nil?
-    message = "Формат номера не верный, введите номер в формате 'xxxxx'" \
-              "или 'xxx-xx', гду x-цифра или буква"
-    raise message unless @number.match?(NUMBER_FORMAT)
-    
-    true
-  end
-
   #методы вспомогательные
   def next_station
     return if @current_station_index >= @route.stations.size - 1
@@ -99,7 +86,4 @@ class Train
 
     @route.stations[@current_station_index - 1]
   end
-
-
-
 end
