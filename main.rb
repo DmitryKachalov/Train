@@ -38,7 +38,8 @@ class Main
     when 1 then start
     when 2 then create_station
     when 3 then print_stations
-    when 4 then delete_station
+    when 4 then print_stations_train
+    when 5 then delete_station
     else start
     end
     manage_station
@@ -61,6 +62,26 @@ class Main
   def print_stations
     @user_stations.each_with_index do |station, index|
       puts "#{index + 1}. #{station.name}"
+    end
+  end
+
+  def print_stations_train
+    @user_stations.each do |station|
+      if station.trains.size == 0
+        puts "На станции #{station.name} нет поездов"
+      else
+        puts "На станции #{station.name} находятся поезда:"
+        station.each_train do |train|
+          # free = 0
+          # occupied = 0
+          # train.each_wagon do |wagon|
+          #   free += wagon.free_place
+          #   occupied += wagon.occupied_place
+          # end
+          puts "Поезд № #{train.number}, тип: #{train.type}, кол-во вагонов: #{train.wagons.size}" + 
+               ", свободного места #{train.free_place}, занятого места #{train.occupied_place}"
+        end
+      end
     end
   end
 
@@ -116,13 +137,27 @@ class Main
     print_trains
     number = @interface.get_number
     action = @interface.wagon_menu
+    wagon_type = ->(cargo, passenger) { @user_trains[number].type == :cargo ? cargo : passenger } #Лямбда
     case action
     when 2
+      puts wagon_type.call('Объем вагона', 'Количество мест в вагоне')
+      place = gets.to_f
       # Добавляем вагон с проверкой на тип
-      wagon = @user_trains[number].type == :cargo ? CargoWagon.new : PassengerWagon.new
+      wagon = wagon_type.call(CargoWagon.new(place), PassengerWagon.new(place))
       @user_trains[number].add_wagon(wagon)
       puts 'Вагон добавлен'
     when 3
+      # Загружаем вагон
+      wagon = @user_trains[number].wagons.find { |wagon| wagon.occupied_place >= 0 }
+      if @user_trains[number].type == :cargo
+        puts 'Какой объем занять?'
+        place = gets.to_f
+        wagon.take_place(place)
+      else
+        wagon.take_place
+      end
+        puts "В вагоне осталось #{wagon.free_place} от максимального #{wagon_type.call('объема', 'количества мест')}"
+    when 4
       @user_trains[number - 1].remove_wagon
       puts 'Вагон удален'
     else manage_train
@@ -134,6 +169,7 @@ class Main
     @user_trains.each_with_index do |train, index|
       message = "#{index + 1}. Номер поезда #{train.number}, Тип поезда: #{train.type}, Количесво вагонов: #{train.wagons.size} "
       message += "Маршрут: #{train.route}" if train.route
+
       puts message if show_all_trains || train.route
     end
   end

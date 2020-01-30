@@ -26,6 +26,10 @@ class Station
     @@all
   end
 
+  def each_train
+    @trains.each { |train| yield train }
+  end
+
   def trains_type(type)
     @trains.select { |train| train.type == type }
   end
