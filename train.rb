@@ -25,6 +25,10 @@ class Train
     @@trains[number]
   end
 
+  def each_wagon
+    @wagons.each { |wagon| yield wagon }
+  end
+
   def decrease_speed(value)
     @speed -= value.abs
     @speed = 0 if @speed.negative?
@@ -72,8 +76,21 @@ class Train
     @route.stations[@current_station_index]
   end
 
+  def free_place
+    get_place('free')
+  end
+
+  def occupied_place
+    get_place('occupied')
+  end
+
   protected
 
+  def get_place(which)
+    place = 0
+    each_wagon { |wagon| place += wagon.send("#{which}_place") }
+    place
+  end
   #методы вспомогательные
   def next_station
     return if @current_station_index >= @route.stations.size - 1

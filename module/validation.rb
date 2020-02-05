@@ -44,6 +44,9 @@ module Validation
     end
 
     def validate_route(val)
+      if val.first.class == 'Station' || val.last.class == 'Station'
+        raise 'Неверный класс станции'
+      end
       raise 'Одинаковые станции' if val.first == val.last
     end
 

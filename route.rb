@@ -1,4 +1,5 @@
 require_relative './module/instance_counter'
+require_relative './module/validation'
 
 class Route
 
@@ -7,8 +8,6 @@ class Route
 
   attr_reader :stations
   validate :stations, :presence
-  validate :stations.first, :type, Station
-  validate :stations.last, :type, Station
   validate :stations, :route
 
   def initialize(start, finish, stations = nil)
