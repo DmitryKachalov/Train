@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require_relative './module/instance_counter'
 require_relative './module/validation'
 
 class Station
-
   include InstanceCounter
   include Validation
 
@@ -18,7 +19,7 @@ class Station
     @name = name
     @trains = []
     @@all << self
-    self.register_instance
+    register_instance
     validate!
   end
 

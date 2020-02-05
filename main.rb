@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'route'
 require_relative 'station'
 require_relative 'train'
@@ -31,7 +33,8 @@ class Main
   end
 
   private
-  #################MANAGE STATION##############
+
+  # ################MANAGE STATION##############
   def manage_station
     action = @interface.station_menu
     case action
@@ -52,7 +55,7 @@ class Main
     @user_stations << station
     puts "Станция #{@user_stations.last.name} создана"
   rescue RuntimeError
-    puts "Неверный формат имени"
+    puts 'Неверный формат имени'
     puts "Введите латинские буквы, kоличество от 3 до 15'"
     retry
   ensure
@@ -67,7 +70,7 @@ class Main
 
   def print_stations_train
     @user_stations.each do |station|
-      if station.trains.size == 0
+      if station.trains.empty?
         puts "На станции #{station.name} нет поездов"
       else
         puts "На станции #{station.name} находятся поезда:"
@@ -78,7 +81,7 @@ class Main
           #   free += wagon.free_place
           #   occupied += wagon.occupied_place
           # end
-          puts "Поезд № #{train.number}, тип: #{train.type}, кол-во вагонов: #{train.wagons.size}" + 
+          puts "Поезд № #{train.number}, тип: #{train.type}, кол-во вагонов: #{train.wagons.size}" \
                ", свободного места #{train.free_place}, занятого места #{train.occupied_place}"
         end
       end
@@ -92,7 +95,7 @@ class Main
     @user_stations.delete_at(number)
   end
 
-  ########################MANAGE TRAIN###########################
+  # #######################MANAGE TRAIN###########################
 
   def manage_train
     action = @interface.train_menu
@@ -124,7 +127,7 @@ class Main
       manage_train
     end
   rescue RuntimeError
-    puts "Неверный формат номера"
+    puts 'Неверный формат номера'
     puts "Введите номер в формате 'xxxxx'" \
          "или 'xxx-xx', где x-цифра или буква"
     retry
@@ -137,7 +140,7 @@ class Main
     print_trains
     number = @interface.get_number
     action = @interface.wagon_menu
-    wagon_type = ->(cargo, passenger) { @user_trains[number].type == :cargo ? cargo : passenger } #Лямбда
+    wagon_type = ->(cargo, passenger) { @user_trains[number].type == :cargo ? cargo : passenger } # Лямбда
     case action
     when 2
       puts wagon_type.call('Объем вагона', 'Количество мест в вагоне')
@@ -156,7 +159,7 @@ class Main
       else
         wagon.take_place
       end
-        puts "В вагоне осталось #{wagon.free_place} от максимального #{wagon_type.call('объема', 'количества мест')}"
+      puts "В вагоне осталось #{wagon.free_place} от максимального #{wagon_type.call('объема', 'количества мест')}"
     when 4
       @user_trains[number - 1].remove_wagon
       puts 'Вагон удален'
@@ -181,7 +184,7 @@ class Main
     @user_trains.delete_at(number)
   end
 
-  ########################MANAGE ROUTE###########################
+  # #######################MANAGE ROUTE###########################
 
   def manage_route
     action = @interface.route_menu
@@ -266,7 +269,7 @@ class Main
     puts "Маршрут #{route.name} удален"
   end
 
-  ########################MANAGE TRAIN ROUTE###########################
+  # #######################MANAGE TRAIN ROUTE###########################
 
   def manage_train_route
     action = @interface.train_route_menu
@@ -291,7 +294,7 @@ class Main
     print_route
     number_route = @interface.get_number
     route = @user_routes[number_route]
-    #Назначение поезду маршрута
+    # Назначение поезду маршрута
     train.accept_route(route)
     puts train
     puts "Поезд № #{train.number}, маршрут #{route.name}"
@@ -317,10 +320,3 @@ class Main
 end
 
 Main.new(Interface.new).start
-
-
-
-
-
-
-

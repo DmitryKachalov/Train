@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require_relative './module/instance_counter'
 require_relative './module/validation'
 
 class Route
-
   include InstanceCounter
   include Validation
 
@@ -14,7 +15,7 @@ class Route
     @stations = [start, finish]
     validate!
     stations&.each { |station| add_station(station) }
-    self.register_instance
+    register_instance
   end
 
   def add_station(station)

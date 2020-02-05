@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require_relative './module/manufacturer'
 require_relative './module/instance_counter'
 require_relative './module/validation'
 class Train
-
   include InstanceCounter
   include Manufacturer
 
@@ -11,14 +12,12 @@ class Train
   attr_reader :number, :speed, :type, :wagons
   @@trains = {}
 
-
   def initialize(number)
     @number = number.to_s
     @wagons = []
     @speed = 0
     @@trains[number] = self
-    self.register_instance
-
+    register_instance
   end
 
   def self.find(number)
@@ -41,7 +40,7 @@ class Train
   def add_wagon(wagon)
     @wagons << wagon if @speed.zero? && @type == wagon.type
   end
-  
+
   def remove_wagon
     @wagons.pop if @speed.zero?
   end
@@ -91,7 +90,8 @@ class Train
     each_wagon { |wagon| place += wagon.send("#{which}_place") }
     place
   end
-  #методы вспомогательные
+
+  # методы вспомогательные
   def next_station
     return if @current_station_index >= @route.stations.size - 1
 
