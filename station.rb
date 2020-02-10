@@ -11,7 +11,8 @@ class Station
 
   NAME_FORMAT = /^[a-z]{1,15}$/i.freeze
 
-  attr_reader :name, :trains
+  attr_reader :trains
+  attr_accessor_with_history :name
   validate :name, :presence
   validate :name, :format, NAME_FORMAT
 
