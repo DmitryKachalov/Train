@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Validation
   def self.included(base)
     base.extend ClassMethods
@@ -49,6 +51,5 @@ module Validation
       end
       raise 'Одинаковые станции' if val.first == val.last
     end
-
   end
 end

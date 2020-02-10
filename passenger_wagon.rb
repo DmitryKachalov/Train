@@ -1,5 +1,6 @@
-class PassengerWagon < Wagon
+# frozen_string_literal: true
 
+class PassengerWagon < Wagon
   def initialize(place)
     super
     @type = :passenger
@@ -8,5 +9,4 @@ class PassengerWagon < Wagon
   def take_place
     super(1)
   end
-
 end
