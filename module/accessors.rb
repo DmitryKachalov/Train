@@ -5,6 +5,7 @@ module Accessors
 
     args.each do |arg|
       instance_variable_set("@#{arg}_history", [])
+      define_method(arg.to_sym) { instance_variable_get("@#{arg}".to_sym) }
       define_method("#{arg}=".to_sym) do |value|
         instance_variable_set("@#{arg}", value)
         history = instance_variable_get("@#{arg}_history")
