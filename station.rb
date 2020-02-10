@@ -2,10 +2,12 @@
 
 require_relative './module/instance_counter'
 require_relative './module/validation'
+require_relative './module/accessors'
 
 class Station
   include InstanceCounter
   include Validation
+  extend Accessors
 
   NAME_FORMAT = /^[a-z]{1,15}$/i.freeze
 
